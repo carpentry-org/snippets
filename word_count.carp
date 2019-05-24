@@ -1,0 +1,44 @@
+; a word counting program. the file is currently hardcoded,
+; so a nice little beginner kata would be to change that.
+;
+; it uses a few interesting techniques to prettify the code
+; that might be interesting even to more seasoned carpenters.
+
+; we use the file library because it’s safe and easy to work
+; with
+(load "https://github.com/carpentry-org/file@0.0.4")
+
+; Counter is a module that behaves like a datatype
+(defmodule Counter
+  ; we pretend that it has an initializer when in fact
+  ; it just returns a map. this is neat for information
+  ; hiding
+  (defn init [] (Map.create))
+
+  ; our only bit of functionality will either get a value
+  ; that belongs to `elem`, which is the word in this case,
+  ; or use `0`, and increment that and put it back into the
+  ; map
+  (defn count [c elem]
+    (Map.update-with-default c elem Int.inc 0))
+)
+
+(defn main []
+  (let [f (File.open "to-count.txt")]
+    (match f
+      ; opening the file can fail. if it does, we just print
+      ; the error. luckily, the file package returns a `Result`
+      (Result.Error err) (IO.errorln &err)
+      (Result.Success f)
+        (let [c (Counter.init)
+              ; we read from a file (and pretend it was empty
+              ; when it fails) and split the result into words
+              w (String.words &(Result.from-success (File.read-all &f) @""))
+              ; file close doesn’t return anything. this technique
+              ; can be handy if you want to avoid a `do`
+              _ (File.close f)]
+          ; the meat of the program: go through all the words,
+          ; count each of them in the counter, and then prettyprint
+          ; the result using `Map.for-each`
+          (Map.for-each &(Array.reduce &Counter.count c &w)
+                        (fn [k v] (println* k ": " v)))))))

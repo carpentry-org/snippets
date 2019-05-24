@@ -1,0 +1,27 @@
+; working with c. the file is called C FFI, but it’s
+; actually not a FFI, because there is no layer between
+; carp and c.
+
+; let’s wrap a few standard library string functions
+; that core doesn’t wrap!
+(system-include "string.h")
+
+(defmodule Char
+  ; these functions are actually Int -> Int, but this turns
+  ; out to be safe, because they behave like Char -> Bool.
+  ; in fact, the spec even says if the input isn’t representable
+  ; as unsigned char the code will exhibit undefined behavior
+  (register punctuation? (Fn [Char] Bool) "ispunct")
+  (register printable?   (Fn [Char] Bool) "isprint")
+  (register blank?       (Fn [Char] Bool) "isblank")
+  (register space?       (Fn [Char] Bool) "isspace")
+  (register graphical?   (Fn [Char] Bool) "isgraph")
+  (register control?     (Fn [Char] Bool) "iscntrl")
+  (register hexadecimal? (Fn [Char] Bool) "isxdigit")
+  (register decimal?     (Fn [Char] Bool) "isdigit")
+)
+
+; using this code, we could for instance check whether a string
+; is printable by doing:
+;   (Array.all? &(fn [a] (Char.printable? @a)) &(String.chars &s))
+; sadly we’d still have to wrap it in a fn to avoid ownership problems

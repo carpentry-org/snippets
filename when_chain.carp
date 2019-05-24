@@ -1,0 +1,31 @@
+; when chaining
+; this allows you to collapse multiple nested whens into one form.
+;
+; this:
+; (let [resource (create-resource)]
+;   (when (intact? &resource)
+;     (when (ready-for-input? &resource)
+;       (when (= "foobar" (name &resource))
+;         (work-with resource)))))
+;
+; becomes this:
+; (let [resource (create-resource)]
+;   (when-chain (intact? &resource)
+;               (ready-for-input? resource)
+;               (= "foobar" (name &resource))
+;     (work-with resource)))
+
+; the worker function for our macro
+(defndynamic when-chain- [forms]
+  (if (= (length forms) 0)
+    ; just emit nothing if nothing was given to us
+    ()
+    (if (= (length forms) 1)
+      ; the last element will always be returned as is; it’s the branch
+      (car forms)
+      ; otherwise we nest the whens recursively
+      (list 'when (car forms) (when-chain- (cdr forms))))))
+
+; the macro just passes all the forms to the worker function
+(defmacro when-chain [:rest forms]
+  (when-chain- forms))

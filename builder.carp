@@ -1,0 +1,69 @@
+; implementing the builder pattern for a struct containing
+; arrays and maps.
+;
+; this allows you to write things such as:
+;  (deftype T [
+;    x Int
+;    y (Map Int String)
+;    z (Array Float)
+;  ])
+;
+;  ; these will generate add-to-y and add-to-z
+;  (map-builder T y)
+;  (array-builder T z)
+;
+;  (defn main []
+;    (println* &(=> (T.init 0 {} [])
+;                   (T.set-x 4)
+;                   (T.add-to-y &3 "hi")
+;                   (T.add-to-z 15.6f))))
+;
+
+; this macro basically just emits templated code:
+; a module containing to functions called `add-to-<prop>`
+; and `add-to-<prop>!`, respectively.
+(defmacro map-builder [md prop]
+  ; we enter the module that we’re passed
+  (list 'defmodule md
+    ; we use Symbol.join to concatenate the prefix and property
+    ; name, and add an array of the object, key, and value of what
+    ; we want to add
+    (list 'defn (Symbol.join ['add-to- prop]) (array 'o 'k 'v)
+      ; we use the updater function to put something in the map
+      ; contained in the property of our type, trusting it all
+      ; works out. otherwise the typechecker will complain
+      (list (Symbol.join ['update- prop]) 'o
+            (list 'ref (list 'fn (array 'm) (list 'Map.put 'm 'k 'v)))))
+    ; the in-place version is much easier, though the head almost
+    ; looks the same
+    (list 'defn (Symbol.join ['add-to- prop '!]) (array 'o 'k 'v)
+      ; the function body will just get the property and mutate it
+      ; in place
+      (list 'Map.put! (list prop 'o) 'k 'v)))
+  ; all of the above would mean that this:
+  ;   (map-builder T y)
+  ; would desugar to this:
+  ;   (defmodule T
+  ;     (defn add-to-y [o k v]
+  ;       (update-y o &(fn [m] (Map.put m k v))))
+  ;     (defn add-to-y! [o k v]
+  ;       (Map.put! (y o) k v)))
+  ; which is actually pretty readable!
+)
+
+; okay, the same deal, but for arrays
+(defmacro array-builder [md prop]
+  (list 'defmodule md
+    ; we only need one argument in addition to the object here,
+    ; i called it `e`
+    (list 'defn (Symbol.join ['add-to- prop]) (array 'o 'e)
+      ; same deal as above, but we call `Array.push-back` instead
+      ; of `Map.put`, as we did in the map version
+      (list (Symbol.join ['update- prop]) 'o
+            (list 'ref (list 'fn (array 'a) (list 'Array.push-back 'a 'e)))))
+    ; the same applies here, instead of `Map.put! we write
+    ; `Array.push-back!`
+    (list 'defn (Symbol.join ['add-to- prop '!]) (array 'o 'e)
+      (list 'Array.push-back! (list prop 'o) 'e)))
+  ; as an exercise, you can try expanding this version by hand!
+)
