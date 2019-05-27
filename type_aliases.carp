@@ -1,0 +1,30 @@
+; type aliases as a macro-writing macro
+;
+; this will enable you to write, for instance:
+;   (type-alias Foo Int)
+;   (def x (the-Foo 1))
+; and thus make foo an alias for Int.
+; the syntax is not quite as convenient as it could be,
+; and if you have a better idea for an API I encourage
+; you to experiment with it; i found this problem to
+; be extremely gratifying.
+
+; a worker function for our macro: it will piece
+; together the macro that the user will then call,
+; `the-<typename>`.
+(defndynamic type-alias-helper [name aliased]
+  ; we build a macro head similarly to what we would do
+  ; if we emitted a function here.
+  (list 'defmacro (Symbol.join ['the- name]) (array 'x)
+    ; this is a little involved. listing `list` and quoting
+    ; `quote` might seem a little outlandish, but what we
+    ; want the body of the macro to be is basically
+    ; `(list 'the '<typename> <arg>)`, which requires us
+    ; to do a little bit of meta-meta-programming.
+    (list 'list (list 'quote 'the) (list 'quote aliased) 'x)))
+
+; the macro just passes everything to the worker function
+; as is.
+(defmacro type-alias [name aliased]
+  (type-alias-helper name aliased))
+

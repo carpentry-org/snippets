@@ -11,7 +11,10 @@ Want to add a snippet? Open a [Pull Request](https://github.com/carpentry-org/sn
 - [builder.carp](/builder.carp): A macro that helps implementing the builder
   pattern for Carp types containing arrays and maps.
 - [cffi.carp](/cffi.carp): A simple example of how to work with the C interface.
-- [when\_chain.carp](/when_chain.carp): A macro to transform nested `when` forms.
+- [type\_aliases.carp](/type_aliases.carp): A macro-writing macro for type
+  aliasing.
+- [when\_chain.carp](/when_chain.carp): A macro to transform nested `when`
+  forms.
 - [word\_count.carp](/word_count.carp): A simple word counting program.
 
 <hr/>
