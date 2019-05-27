@@ -20,7 +20,7 @@
   ; or use `0`, and increment that and put it back into the
   ; map
   (defn count [c elem]
-    (Map.update-with-default c elem Int.inc 0))
+    (Map.update-with-default c elem &Int.inc 0))
 )
 
 (defn main []
@@ -41,4 +41,4 @@
           ; count each of them in the counter, and then prettyprint
           ; the result using `Map.for-each`
           (Map.for-each &(Array.reduce &Counter.count c &w)
-                        (fn [k v] (println* k ": " v)))))))
+                        &(fn [k v] (println* k ": " v)))))))

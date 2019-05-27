@@ -1,0 +1,31 @@
+; the SKI combinator calculus in carp
+;
+; SKI is a calculus of three constructions:
+; - `s`, which takes two functions and an argument,
+;   applying the second function to the argument and
+;   passing the result into the first function along
+;   with the original argument,
+; - `k`, which takes two arguments and returns the
+;   first,
+; - and `i`, which takes one argument and returns it
+;   as is—the identity function.
+;
+; while it might not be immediately obvious how this
+; is useful at all, it’s actually quite powerful when
+; combined with such things as church encodings.
+;
+; for a simple example, let’s consider doubling a
+; number:
+;   (s + i 10)
+; which will run the identity function on `10`, which
+; will result in `10` being passed to `s` twice.
+;
+
+; the SKI module, containing the combinators.
+; the combinators themselves should be relatively
+; obvious from the description above.
+(defmodule SKI
+  (defn s [f g x] (f x (g x)))
+  (defn k [x y] x)
+  (defn i [x] x)
+)
