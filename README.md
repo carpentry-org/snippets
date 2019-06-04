@@ -9,7 +9,8 @@ Want to add a snippet? Open a [Pull Request](https://github.com/carpentry-org/sn
 ## Table of Contents
 
 - [builder.carp](/builder.carp): A macro that helps implementing the builder
-  pattern for Carp types containing arrays and maps.
+- [build\_system.carp](/build_system.carp): Showcase for using Carp code as a
+  build system.
 - [cffi.carp](/cffi.carp): A simple example of how to work with the C interface.
 - [ski.carp](/ski.carp): A module implementing the [SKI combinator
   calculus](https://en.wikipedia.org/wiki/SKI_combinator_calculus).

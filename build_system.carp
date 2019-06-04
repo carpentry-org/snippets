@@ -1,0 +1,37 @@
+; a multi-build system, expressed in carp source code
+;
+; this leverages the fact that carp is interactively programmable at compile
+; time through macros, dynamic functions, and directives.
+
+(Project.config "title" "build_system")
+
+; first, let’s define the function that we want to compile
+(defn addmul [a b] (Int.+ a (* b b)))
+
+; now let’s define a dynamic function that takes a compiler name and produces
+; an executable using that compiler
+(defndynamic build-for [compiler]
+  (do
+    ; let’s print a helpful log message. str concatenates strings at compile
+    ; time
+    (macro-log (str "Building for " compiler))
+    ; suffix the project title with -<compiler-name>
+    (Project.config "title" (str (Project.get-config "title") "-" compiler))
+    ; set the compiler
+    (Project.config "compiler" compiler)
+    ; also emit the compiler command, for good measure
+    (Project.config "echo-compiler-cmd" true)
+    ; now build
+    (build)
+    (macro-log (str "Build for " compiler " finished."))))
+
+; let’s build for clang and gcc
+(build-for "clang")
+(build-for "gcc")
+
+; let’s use the ms compiler on windows as well!
+(windows-only
+  (build-for "cl"))
+
+; and exit
+(quit)
