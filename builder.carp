@@ -33,7 +33,7 @@
       ; contained in the property of our type, trusting it all
       ; works out. otherwise the typechecker will complain
       (list (Symbol.join ['update- prop]) 'o
-            (list 'ref (list 'fn (array 'm) (list 'Map.put 'm 'k 'v)))))
+            '(ref (fn [map] (Map.put map k v)))))
     ; the in-place version is much easier, though the head almost
     ; looks the same
     (list 'defn (Symbol.join ['add-to- prop '!]) (array 'o 'k 'v)
@@ -60,7 +60,7 @@
       ; same deal as above, but we call `Array.push-back` instead
       ; of `Map.put`, as we did in the map version
       (list (Symbol.join ['update- prop]) 'o
-            (list 'ref (list 'fn (array 'a) (list 'Array.push-back 'a 'e)))))
+            '(ref (fn [a] (Array.push-back a e)))))
     ; the same applies here, instead of `Map.put! we write
     ; `Array.push-back!`
     (list 'defn (Symbol.join ['add-to- prop '!]) (array 'o 'e)
