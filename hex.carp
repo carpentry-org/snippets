@@ -1,0 +1,69 @@
+; this file implements a simple converter from a hexadecimal string to a
+; number. it’s supposed to teach you about modules and how to structure them.
+
+; the Hex module; the only publicly exposed function is `parse`, which takes a
+; hexadecimal string and returns a number. all the other properties are hidden.
+(defmodule Hex
+  ; *map* is a module-global variable holding the hex-to-num translation. it is
+  ; both hidden (meaning docs are not exposed) and private (meaning that can’t
+  ; be referenced from outside the module).
+  (private *map*)
+  (hidden *map*)
+  (def *map* {
+    \0 0
+    \1 1
+    \2 2
+    \3 3
+    \4 4
+    \5 5
+    \6 6
+    \7 7
+    \8 8
+    \9 9
+    \A 10
+    \B 11
+    \C 12
+    \D 13
+    \E 14
+    \F 15
+    \a 10
+    \b 11
+    \c 12
+    \d 13
+    \e 14
+    \f 15
+  })
+
+  ; parse-char is a private function. it is also marked both as private and
+  ; hidden, and it basically just gets its values from the map
+  (private parse-char)
+  (hidden parse-char)
+  (defn parse-char [c]
+    (Map.get-with-default &*map* c &0))
+
+  ; parse takes in a hexadecimal string and calls reduce over the characters to
+  ; end up with a number representing the value.
+  ;
+  ; suggested exercise: make parse return a maybe, returning nothing if the
+  ; input string is not hexadecimal.
+  (defn parse [s]
+    (Array.reduce
+      &(fn [acc c] (+ (Int.bit-shift-left acc 4) (parse-char c)))
+      0
+      &(String.chars s)))
+  ; those annotations would usually come before the function, but for the
+  ; purposes of this tutorial i’ve decided to put them after:
+
+  ; a todo for parse. you can fix it!
+  (todo parse "error handling!")
+
+  ; the documentation for parse. you can use markdown here!
+  (doc parse "parses a hexadecimal input string `s`. It doesn’t handle numbers
+that are too big to fit into an integer nor non-hexadecimal strings gracefully.
+
+Example:
+```
+(Hex.parse \"B33F\") ; => 45887
+(Hex.parse \"xxxx\") ; => 0
+```")
+)
