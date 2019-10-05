@@ -8,7 +8,7 @@ Want to add a snippet? Open a [Pull Request](https://github.com/carpentry-org/sn
 
 ## Table of Contents
 
-- [builder.carp](/builder.carp): A macro that helps implementing the builder
+- [builder.carp](/builder.carp): A macro that helps implementing the builder pattern in Carp.
 - [build\_system.carp](/build_system.carp): Showcase for using Carp code as a
   build system.
 - [cffi.carp](/cffi.carp): A simple example of how to work with the C interface.
