@@ -25,18 +25,18 @@
 (defmacro map-builder [md prop]
   ; we enter the module that we’re passed
   (list 'defmodule md
-    ; we use Symbol.join to concatenate the prefix and property
+    ; we use Symbol.concat to concatenate the prefix and property
     ; name, and add an array of the object, key, and value of what
     ; we want to add
-    (list 'defn (Symbol.join ['add-to- prop]) (array 'o 'k 'v)
+    (list 'defn (Symbol.concat ['add-to- prop]) (array 'o 'k 'v)
       ; we use the updater function to put something in the map
       ; contained in the property of our type, trusting it all
       ; works out. otherwise the typechecker will complain
-      (list (Symbol.join ['update- prop]) 'o
+      (list (Symbol.concat ['update- prop]) 'o
             '(ref (fn [map] (Map.put map k v)))))
     ; the in-place version is much easier, though the head almost
     ; looks the same
-    (list 'defn (Symbol.join ['add-to- prop '!]) (array 'o 'k 'v)
+    (list 'defn (Symbol.concat ['add-to- prop '!]) (array 'o 'k 'v)
       ; the function body will just get the property and mutate it
       ; in place
       (list 'Map.put! (list prop 'o) 'k 'v)))
@@ -56,14 +56,14 @@
   (list 'defmodule md
     ; we only need one argument in addition to the object here,
     ; i called it `e`
-    (list 'defn (Symbol.join ['add-to- prop]) (array 'o 'e)
+    (list 'defn (Symbol.concat ['add-to- prop]) (array 'o 'e)
       ; same deal as above, but we call `Array.push-back` instead
       ; of `Map.put`, as we did in the map version
-      (list (Symbol.join ['update- prop]) 'o
+      (list (Symbol.concat ['update- prop]) 'o
             '(ref (fn [a] (Array.push-back a e)))))
     ; the same applies here, instead of `Map.put! we write
     ; `Array.push-back!`
-    (list 'defn (Symbol.join ['add-to- prop '!]) (array 'o 'e)
+    (list 'defn (Symbol.concat ['add-to- prop '!]) (array 'o 'e)
       (list 'Array.push-back! (list prop 'o) 'e)))
   ; as an exercise, you can try expanding this version by hand!
 )

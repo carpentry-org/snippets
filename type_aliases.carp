@@ -15,7 +15,7 @@
 (defndynamic type-alias-helper [name aliased]
   ; we build a macro head similarly to what we would do
   ; if we emitted a function here.
-  (list 'defmacro (Symbol.join ['the- name]) (array 'x)
+  (list 'defmacro (Symbol.concat ['the- name]) (array 'x)
     ; this is a little involved. listing `list` and quoting
     ; `quote` might seem a little outlandish, but what we
     ; want the body of the macro to be is basically

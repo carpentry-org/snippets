@@ -6,7 +6,7 @@
 
 ; we use the file library because it’s safe and easy to work
 ; with
-(load "https://github.com/carpentry-org/file@0.0.4")
+(load "https://github.com/carpentry-org/file@0.1.1")
 
 ; Counter is a module that behaves like a datatype
 (defmodule Counter
